@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .comment-item { margin-bottom: 1rem; padding: 0.5rem; border-bottom: 1px solid #ddd; }
+        .comment-item strong { color: #333; }
+        textarea { width: 100%; height: 70px; margin-top: 0.5rem; }
+        button { margin-top: 0.5rem; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div>
+    <h1>게시판</h1>
+    <hr>
+    <h2 th:text="${post.title}">제목</h2>
+    <hr>
+    <div>
+        <strong>작성자 :</strong>
+        <span th:text="${post.author}"></span>
+    </div>
+    <div>
+        <strong>작성일 :</strong>
+        <span th:text="${#temporals.format(post.created_at, 'yyyy-MM-dd HH:mm')}"></span>
+    </div>
+    <hr>
+    <div>
+        <p th:utext="${contentWithBr}"></p>
+    </div>
+
+    <button type="button" onclick="location.href='/post/list'">게시글 목록</button>
+</div>
+
+
+
+<!-- ajax 활용해서 댓글창 구현 (프론트엔드)  -->
+<!-- 댓글 영역 -->
+<h2>댓글</h2>
+<hr>
+
+<!-- 댓글 입력 -->
+<div>
+    <textarea id="commentContent" placeholder="댓글을 입력하세요"></textarea><br>
+    <button onclick="addComment()">댓글 등록</button>
+</div>
+
+<!-- 댓글 목록 -->
+<div id="commentList">
+    <div th:each="comment : ${comments}" class="comment-item" th:attr="data-id=${comment.id}">
+        <strong th:text="${comment.comments_name}"></strong><br>
+        <span th:utext="${comment.comments_content}"></span><br>
+        <small th:text="${#temporals.format(comment.created_at, 'yyyy-MM-dd HH:mm')}"></small>
+        <button onclick="deleteComment([[${comment.id}]])">삭제</button>
+    </div>
+</div>
+
+<hr>
+
+<!-- 수정 / 삭제 -->
+<form th:action="@{/post/edit/{id}(id=${post.id})}">
+    <button type="submit">게시글 수정</button>
+</form>
+
+<form th:action="@{/post/delete}" method="post">
+    <input type="hidden" name="id" th:value="${post.id}">
+    <button type="submit">게시글 삭제</button>
+</form>
+
+<div>
+    <a th:if="${nextId}" th:href="@{/post/detail/{id}(id=${nextId})}">다음 글</a>
+    <a th:if="${prevId}" th:href="@{/post/detail/{id}(id=${prevId})}">이전 글</a>
+</div>
+
+<script>
+    const postId = [[${post.id}]]; // Thymeleaf에서 post.id 주입
+
+    // 댓글 등록
+    function addComment() {
+        const content = document.getElementById("commentContent").value.trim();
+        if (!content) {
+            alert("댓글 내용을 입력하세요.");
+            return;
+        }
+
+        fetch("/comment/add", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ posts_id: postId, comments_content: content })
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("댓글 등록 실패");
+                return res.json();
+            })
+            .then(data => {
+                // DOM에 댓글 추가
+                const list = document.getElementById("commentList");
+                const newComment = document.createElement("div");
+                newComment.className = "comment-item";
+                newComment.setAttribute("data-id", data.id);
+                newComment.innerHTML = `
+          <strong>${data.comments_name}</strong><br>
+          <span>${data.comments_content}</span><br>
+          <small>${data.created_at}</small>
+          <button onclick="deleteComment(${data.id})">삭제</button>
+        `;
+                list.appendChild(newComment);
+                document.getElementById("commentContent").value = "";
+            })
+            .catch(err => alert(err));
+    }
+
+    // 댓글 삭제
+    function deleteComment(id) {
+        fetch("/comment/delete?id=" + id, { method: "POST" })
+            .then(res => {
+                if (!res.ok) throw new Error("댓글 삭제 실패");
+                // DOM에서 해당 댓글만 삭제
+                const item = document.querySelector(`[data-id='${id}']`);
+                if (item) item.remove();
+            })
+            .catch(err => alert(err));
+    }
+</script>
+</body>
+</html>

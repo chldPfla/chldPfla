@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${post.title}">게시글 상세</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<header>
+  <h1>공지사항</h1>
+</header>
+
+<main style="width:90%; margin:auto;">
+
+  <!-- 게시글 -->
+  <h2 th:text="${post.title}">제목</h2>
+  <div style="display:flex; justify-content:space-between; border-top:1px solid #ddd; padding:8px 0;">
+    <span><strong>작성자:</strong> <span th:text="${post.author}"></span></span>
+    <span><strong>작성일:</strong> <span th:text="${#temporals.format(post.created_at,'yyyy-MM-dd HH:mm')}"></span></span>
+  </div>
+  <div style="border:1px solid #ccc; min-height:150px; padding:12px; margin:10px 0; white-space:pre-line;">
+    <p th:utext="${contentWithBr}">내용</p>
+  </div>
+
+  <!-- 댓글 -->
+  <h3>댓글</h3>
+  <div id="commentList" style="border:1px solid #ddd; padding:10px; border-radius:8px; min-height:50px;">
+    <p th:if="${#lists.isEmpty(comments)}">댓글이 없습니다.</p>
+    <div th:each="comment : ${comments}" class="comment-item">
+      <span class="comment-writer" th:text="${comment.comments_name}">작성자</span>
+      <span class="comment-time" th:text="${#temporals.format(comment.created_at,'yyyy-MM-dd HH:mm')}">시간</span>
+      <p th:utext="${comment.comments_content}"></p>
+      <a href="#" class="delete-comment" th:data-id="${comment.id}" style="color:red; font-size:12px;">삭제</a>
+      <hr>
+    </div>
+  </div>
+
+  <!-- 댓글 입력 -->
+  <div class="comment-box">
+    <input type="text" id="commentContent" placeholder="댓글을 입력하세요">
+    <button id="addCommentBtn">댓글 등록</button>
+  </div>
+
+  <!-- 이전글 / 다음글 -->
+  <div style="display:flex; justify-content:space-between; margin-top:20px;">
+    <a th:if="${prevId}" th:href="@{/post/detail/{id}(id=${prevId})}">이전글</a>
+    <a th:if="${nextId}" th:href="@{/post/detail/{id}(id=${nextId})}">다음글</a>
+  </div>
+</main>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const postId = /*[[${post.id}]]*/ 0;
+
+  // 댓글 등록
+  document.getElementById("addCommentBtn").addEventListener("click", () => {
+    const content = document.getElementById("commentContent").value.trim();
+    if (!content) {
+      alert("댓글을 입력하세요.");
+      return;
+    }
+
+    fetch(`/comment/add`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ posts_id: postId, comments_content: content })
+    })
+    .then(res => res.json())
+    .then(data => {
+      renderComments(data);
+      document.getElementById("commentContent").value = "";
+    })
+    .catch(err => console.error(err));
+  });
+
+  // 댓글 삭제 (이벤트 위임)
+  document.getElementById("commentList").addEventListener("click", e => {
+    if (e.target.classList.contains("delete-comment")) {
+      e.preventDefault();
+      const commentId = e.target.dataset.id;
+      fetch(`/comment/delete/${commentId}`, { method: "DELETE" })
+        .then(res => res.json())
+        .then(data => renderComments(data))
+        .catch(err => console.error(err));
+    }
+  });
+
+  // 댓글 목록 다시 그리기
+  function renderComments(comments) {
+    const list = document.getElementById("commentList");
+    list.innerHTML = "";
+    if (!comments || comments.length === 0) {
+      list.innerHTML = "<p>댓글이 없습니다.</p>";
+      return;
+    }
+    comments.forEach(c => {
+      list.innerHTML += `
+        <div class="comment-item">
+          <span class="comment-writer">${c.comments_name}</span>
+          <span class="comment-time">${c.created_at}</span>
+          <p>${c.comments_content}</p>
+          <a href="#" class="delete-comment" data-id="${c.id}" style="color:red; font-size:12px;">삭제</a>
+          <hr>
+        </div>
+      `;
+    });
+  }
+});
+</script>
+
+</body>
+</html>
