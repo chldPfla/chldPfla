@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 수정</title>
+    <link rel="stylesheet" href="/css/stylePost.css">
+    <style>
+        textarea {
+            width: 100%;
+            height: 400px;
+            resize: vertical;
+            font-family: inherit;
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="fragments/mainheader :: mainHeader"></div>
+
+<main class="editPost-detail-container">
+    <div class="editPost-card">
+        <h2>게시글 수정</h2>
+        <form th:action="@{/post/edit}" th:object="${post}" method="post">
+
+            <div class="control" th:if="${userRole == 'ADMIN'}">
+                <div class="category">
+                    <select th:field="*{fixed}">
+                        <option value="0">일반 게시글</option>
+                        <option value="1">고정 게시글</option>
+                    </select>
+                </div>
+
+                <div class="category">
+                    <select th:field="*{category}">
+                        <option value="FREEBOARD">자유</option>
+                        <option value="NOTICE">공지사항</option>
+                    </select>
+                </div>
+            </div>
+            <th:block th:if="${userRole != 'ADMIN'}">
+                <input type="hidden" th:field="*{fixed}" value="0" />
+                <input type="hidden" th:field="*{category}" value="FREEBOARD" />
+            </th:block>
+           
+            <label style="color:#4caf50; font-weight: 600; margin-right: 6px;">
+                작성자: <input type="text" th:field="*{id}" readonly/></label>
+            <hr/>
+
+            <label style="color:#4caf50; font-weight: 600; margin-right: 6px;">
+                제목: <input type="text" id="editTitle" th:field="*{title}"/></label><br/>
+            <hr>
+            <label style="color:#4caf50; font-weight: 600; margin-right: 6px;">
+                내용: <textarea type="text" th:field="*{content}"></textarea>
+            </label><br/>
+            <div class="button-group">
+                <button type="submit">수정</button>
+                <button type="button" onclick="history.back()">취소</button>
+            </div>
+        </form>
+
+
+    </div>
+
+</main>
+</body>
+</html>
