@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>댓글 수정 - Vegan delight</title>
+    <link rel="stylesheet" href="stylePost.css">
+</head>
+<body>
+
+  <header>
+    <h1><a href="/">Vegan Delight</a></h1>
+    <nav id="navMenu">
+      <a href="index.html">홈</a>
+      <a href="courses.html">강의</a>
+      <a href="myFridge.html">나의 냉장고</a>
+      <a href="main.html">게시판</a>
+      <a href="login.html" id="loginBtn">로그인</a>
+      <a href="mypage.html">마이페이지</a> 
+    </nav>
+  </header>
+
+<main class="editComment-container">
+
+    <div class="editComment-card">
+        <h2>댓글 수정</h2>
+
+        <form th:action="@{//}" th:object="${}" method="post">
+
+            <p style="color:#4caf50; font-weight: 600; margin-right: 6px;">
+            내용 :</p> <textarea th:field="*{}" rows="10"></textarea>
+
+            <div class="editCommentBtn">
+                <button type="submit" onclick="location.href='/'">수정</button>
+                <button type="button" onclick="location.href='/post/list'">취소</button>
+            </div>
+        </form>
+    </div>
+
+
+</main>
+</body>
+</html>

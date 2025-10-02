@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vegan LMS - uploadQuiz</title>
+  <link rel="stylesheet" href="styleT.css">
+</head>
+<body>
+ <header>
+    <h1><a href="/">Vegan Delight</a></h1>
+    <nav id="navMenu">
+      <a href="index.html">홈</a>
+      <a href="courses.html">강의</a>
+      <a href="myFridge.html">나의 냉장고</a>
+      <a href="main.html">게시판</a>
+      <a href="login.html" id="loginBtn">로그인</a>
+      <a href="mypage.html">마이페이지</a> 
+    </nav>
+  </header>
+
+  <div class="page-wrapper">
+    <nav id="subNavT">
+      <a href="">나의 강의 관리</a>
+      <a href="uploadCourse.html">강의 등록 / 퀴즈 출제</a>
+    </nav>
+  
+   <main class="uploadQuiz-container">
+  <h2>퀴즈 출제</h2>
+  <p style="color:#4caf50; font-weight: 600; margin-right: 6px;">
+    강의 제목 :<input type="text" readonly>
+  </p>
+  <hr>
+
+  
+  <div id="quizWrapper">
+    
+    <div class="quiz-card">
+      <h3>Q1.</h3>
+      <textarea class="quizCard-area" rows="2" placeholder="문제를 입력하세요"></textarea>
+      <label style="font-size: large; font-weight: 600;">정답: </label>
+      <input type="text" placeholder="정답 입력">
+    </div>
+  </div>
+
+  
+  <div class="uploadBtns">
+    <button id="addQuiz-btn" type="button">문항 추가</button>
+    <button id="uploadQuiz-btn" type="submit">출제 완료</button>
+    <button type="button">닫기</button>
+  </div>
+</main>
+
+
+</body>
+
+<script>
+
+const quizWrapper = document.getElementById("quizWrapper");
+const addQuizBtn = document.getElementById("addQuiz-btn");
+let quizCount = 1; 
+
+addQuizBtn.addEventListener("click", () => {
+  if (quizCount >= 5) {
+    alert("최대 5문제까지 출제 가능합니다.");
+    return;
+  }
+  quizCount++;
+
+  const newCard = document.createElement("div");
+  newCard.className = "quiz-card";
+  newCard.innerHTML = `
+    <h3>Q${quizCount}.</h3>
+    <textarea class="quizCard-area" rows="2" placeholder="문제를 입력하세요"></textarea>
+    <label style="font-size: large; font-weight: 600;">정답: </label>
+    <input type="text" placeholder="정답 입력">
+  `;
+  quizWrapper.appendChild(newCard);
+});
+
+  document.getElementById("uploadQuiz-btn").addEventListener("click", function(event) {
+    alert("강의등록 및 퀴즈 출제가 완료 되었습니다.");
+  });
+</script>
+</div>
+</html>
