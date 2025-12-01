@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>minesweeper </title>
+</head>
+<style>
+    #gameBoard {
+        width: 800px;
+        height: 1000px;
+        border: 3px solid #000000;
+        text-align: center;
+        margin: auto;
+        padding: auto;
+        background-color: #b5b1b1;
+        font-family: PixelifySans-Bold;
+    }
+
+    button {
+        margin: 5px;
+        text-align: center;
+        padding: 5px;
+    }
+
+    #content1 {
+        width: 700px;
+        height: 100px;
+        border: 3px solid #524f4f;
+        text-align: center;
+        margin: auto;
+        margin-top: 20px;
+        box-shadow: 3px 3px 3px 3px #524f4f;
+    }
+
+    #unfindedBomb {
+        width: 150px;
+        height: 50px;
+        border: 3px solid #524f4f;
+        float: left;
+        margin-left: 40px;
+        margin-top: 25px;
+    }
+
+    #time {
+        width: 150px;
+        height: 50px;
+        border: 3px solid #524f4f;
+        float: right;
+        margin-right: 40px;
+        margin-top: 25px;
+    }
+
+    #resetBtn {
+        margin: auto;
+        padding: auto;
+        margin-top: 35px;
+        
+    }
+</style>
+
+<body>
+    <div id="gameBoard">
+        <h1>Minesweeper</h1>
+        <button id="easy">easy</button>
+        <button id="nomal">nomal </button>
+        <button id="hard">hard</button>
+        <button id="custom">custom</button>
+
+        <div id="content1">
+            <div id="unfindedBomb">
+
+            </div>
+
+            <div id="time">
+
+            </div>
+            <div id="reset">
+                <button id="resetBtn">reset</button>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+   
+   function easy() {
+    const startBtn = document.getElementById("startBtn");
+    startBtn.addEventListener("click", setGame);
+  
+    const row = parseInt(document.getElementById("row").value);
+    const col = parseInt(document.getElementById("col").value);
+
+    makeBoard(row, col);
+
+    }
+
+    function nomal() {
+
+    }
+    function hard() {
+
+    }
+
+    function custom() {
+    alert 
+    alert
+
+    }
+
+
+
+
+   
+</script>
+
+</html>

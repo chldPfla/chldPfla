@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>음료 자판기</title>
+    <style>
+        #menu {
+            width: 90%;
+            border: 2px solid #333;
+            margin: 20px auto;
+            font-weight: 900;
+            font-style: normal;
+            text-align: center;
+        }
+
+        #menu article button {
+            cursor: pointer;
+        }
+
+        .drink article {
+            background-color: #fff;
+            padding: 10px;
+            text-align: center;
+            margin: auto;
+        }
+
+        #wrapper {
+            width: 750px;
+            height: 1000px;
+            padding: 10px;
+            margin: 0 auto;
+            border: 10px solid #ccc;
+            text-align: center;
+            float: left;
+        }
+
+
+        article {
+            display: inline-block;
+            border: 1px solid #fff;
+            padding: 10px;
+            margin-right: 30px;
+        }
+
+        #pocaA {
+            margin-right: 50px;
+            text-align: center;
+        }
+
+        #fantaA {
+            margin-left: 70px;
+        }
+
+        #led {
+            width: 90%;
+            margin: 5px auto;
+            padding: 10px;
+            text-align: center;
+            border: 3px solid #333;
+        }
+
+        #led input {
+            text-align: right;
+            padding: 5px;
+            border-color: #333;
+        }
+
+        #output {
+            width: 90%;
+            height: 380px;
+            padding: 10px;
+            position: relative;
+            text-align: right;
+            display: inline-block;
+            border-radius: 20px;
+            margin: 10px auto;
+            text-align: center;
+            margin-top: 0px;
+        }
+
+        #outDrinks {
+            position: absolute;
+            width: 700px;
+            height: 350px;
+            top: 2em;
+            left: 0.5em;
+            display: inline-block;
+            background-image: url('out1.png');
+            background-repeat: no-repeat;
+        }
+
+        #outDrink {
+            margin-top: 100px;
+            margin-left: 10px;
+        }
+
+        #led>label:nth-child(4) {
+            margin-left: 3em;
+        }
+
+        #coinBox {
+            width: 90%;
+            height: 120px;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px auto;
+            border: 3px solid #333;
+            vertical-align: baseline;
+        }
+
+        #coins {
+            display: inline-block;
+            text-align: left;
+            margin-top: 30px;
+            float: left;
+        }
+
+        #inCoins {
+            float: right;
+            display: inline-block;
+            width: 150px;
+            padding: 1em 2em;
+            border: 1px solid #999;
+            background-color: #ddd;
+            margin: 10px auto;
+            border-radius: 10px;
+        }
+
+        #coins img {
+            cursor: grab;
+        }
+
+        #slot {
+            width: 100px;
+            padding: 10px;
+            background-color: #ddd;
+            border: 10px solid #555;
+            border-radius: 10px;
+        }
+
+        #outCoins {
+            display: inline-block;
+            margin-left: 3em;
+        }
+
+        #outCoins button {
+            width: 70px;
+            height: 70px;
+            background-image: url('return.png');
+            background-repeat: no-repeat;
+            border-radius: 50%;
+            border: 3px solid rgb(83, 82, 80);
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        #inCoins input {
+            width: 100px;
+            padding: 5px 5px;
+            border: 5px solid #999;
+            background-color: #333;
+            border-radius: 20px;
+        }
+
+        .fade-out {
+            opacity: 0;
+            transition: opacity 1s ease-out;
+        }
+
+        #baguni {
+            width: 200px;
+            display: flex;
+            padding: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrapper">
+        <h1>음료 자판기</h1>
+        <div id="menu">
+            <div class="drink">
+                <article id="pocaA">
+                    <img src="pocaOut.png" alt="포카리">
+                    <h3>가격 : <span id="pocaPrice"></span>원</h3>
+                    <button class="drinkBtn" id="poca">포카리</button>
+                </article>
+                <article id="colaA">
+                    <img src="colaOut.png" alt="코카콜라">
+                    <h3>가격 : <span id="colaPrice"></span>원</h3>
+                    <button class="drinkBtn" id="cola">코카콜라</button>
+                </article>
+                <article id="fantaA">
+                    <img src="fantaOut.png" alt="환타">
+                    <h3>가격 : <span id="fantaPrice"></span>원</h3>
+                    <button class="drinkBtn" id="fanta">환타</button>
+                </article>
+            </div>
+        </div>
+        <div id="led">
+            <label for="coin">동전 : </label>
+            <input type="text" size="3" value="0" id="coin" placeholder="동전 입력">원
+            <button id="inputMoney">동전입력</button>
+
+            <label for="inMoney">
+                투입금액 :
+                <input type="text" readonly size="4" id="inMoney" value="0">원
+            </label>
+
+        </div>
+
+        <div id="coinBox">
+            <div id="coins">
+                <img class="coin" draggable="true" src="coin500.png" id="coin500" alt="500원">
+                <img class="coin" draggable="true" src="coin100.png" id="coin100" alt="100원">
+                <img class="coin" draggable="true" src="coin50.png" id="coin50" alt="50원">
+            </div>
+
+            <div id="outCoins">
+                <textarea rows="2" cols="10" id="exchangeCoins"></textarea>
+                <button id="exchangCoins"></button>
+            </div>
+
+            <div id="inCoins">
+                <div id="slot"></div>
+            </div>
+        </div>
+
+        <div id="output">
+            <div id="outDrinks">
+                <div id="outDrink" style="visibility: hidden;">
+                    <img class="imgDrink" src="pocaOut.png">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="baguni">
+        <div id="list">
+            <h2>구매 목록</h2>
+            <div data-name="포카리" style="display:none; text-align:center; margin:10px;">
+                <img src="pocaOut.png" alt="포카리" width="80" />
+                <p>포카리 x <span class="count">0</span></p>
+            </div>
+
+            <div data-name="코카콜라" style="display:none; text-align:center; margin:10px;">
+                <img src="colaOut.png" alt="코카콜라" width="80" />
+                <p>코카콜라 x <span class="count">0</span></p>
+            </div>
+
+            <div data-name="환타" style="display:none; text-align:center; margin:10px;">
+                <img src="fantaOut.png" alt="환타" width="80" />
+                <p>환타 x <span class="count">0</span></p>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+        // 메뉴선택 처리
+
+        // 총입력한 동전
+        let totInMoney = 0;
+
+        // 자판기 판매금액 누적
+        let VMInMoney = 0;
+        const POCA_PRICE = 700;
+        const COLA_PRICE = 800;
+        const FANTA_PRICE = 900;
+
+        const drinkNames = ['포카리', '코카콜라', '환타'];
+
+        const drinkPrice = {
+            "포카리": 700,
+            "코카콜라": 800,
+            "환타": 900
+        }
+
+        const drinkImage = {
+            "포카리": 'pocaOut',
+            "코카콜라": 'colaOut',
+            "환타": 'fantaOut'
+        }
+
+        const soldoutImage = {
+            "포카리": 'pocaSoldout',
+            "코카콜라": 'colaSoldout',
+            "환타": 'fantaSoldout'
+        }
+
+        const drinkStock = {
+            "포카리": 5,
+            "코카콜라": 5,
+            "환타": 5
+        };
+
+
+
+        // 화면에 가격 표시 
+        document.querySelector("#pocaPrice").innerText = POCA_PRICE;
+        document.querySelector("#colaPrice").innerText = COLA_PRICE;
+        document.querySelector("#fantaPrice").innerText = FANTA_PRICE;
+
+        // 음료 출력화면 연결
+        const $outDrinkImg = document.querySelector('#outDrink img');
+        console.log('$outDrinkImg :' + $outDrinkImg.src)
+
+        // 동전 드롭영역 연결
+        const slot = document.querySelector("#slot");
+        const coinBtns = document.querySelectorAll(".coin");
+
+        // 동전 드래그 시작
+        coinBtns.forEach(coinBtn => {
+            addEventListener("dragstart", function (event) {
+                event.dataTransfer.setData("text", event.target.id);
+            });
+        });
+
+        // 동전 드래그 진행 중...
+        slot.addEventListener("dragover", (event) => {
+            event.preventDefault();// 각각의 고유 이벤트 방지
+        });
+
+        // 동전 드롭 : 동전값 만큼 누적, 동전이 사라짐
+        slot.addEventListener("drop", (event) => {
+            const coinId = event.dataTransfer.getData("text");
+            console.log('==>' + coinId);
+            const draggedCoin = document.getElementById(coinId);
+
+            let coinValue = draggedCoin.getAttribute('alt');
+            totInMoney += parseInt(
+                coinValue.slice(0,
+                    coinValue.lastIndexOf("원", coinValue)));
+            document.querySelector("#inMoney").value = totInMoney;
+
+            // 동전 복사
+            const newCoin = draggedCoin.cloneNode(true);
+            newCoin.style.position = "static";
+            newCoin.style.zIndex = "1";
+            slot.appendChild(newCoin);
+
+            setTimeout(() => {
+                newCoin.remove();
+            }, 1000);
+        })
+
+        // 음료 메뉴를 선택하면 각각 메뉴에 맞는 기능 구현
+        const drinkBtns = document.querySelectorAll('.drinkBtn')
+            .forEach(drinkBtn => {
+                drinkBtn.addEventListener('click', function (event) {
+
+                    // 음료메뉴 클릭하면 해야할 일을 기술
+                    // 음료메뉴 이름 가져오기
+                    let drinkName = event.target.textContent;
+
+                    let drinkPrice = getPrice(drinkName);
+
+                    // 재고 확인
+                    if (drinkStock[drinkName] <= 0) {
+                        alert(`${drinkName}가 매진되었습니다.`);
+                        return;
+                    }
+
+                    // 투입한 동전과 음료가격을 비교하여 커피 판매
+                    if (totInMoney >= drinkPrice) {
+                        VMInMoney += drinkPrice;
+                        totInMoney -= drinkPrice;
+                        document.querySelector("#inMoney").value = totInMoney;
+
+                        // 선택한 음료 메뉴 출력
+                        const imgSrc = outDrink(drinkName);
+                        $outDrinkImg.src = imgSrc;
+                        $outDrinkImg.style.visibility = 'visible';
+
+
+                        // 재고 감소
+                        drinkStock[drinkName]--;
+
+                        addOutDrink(drinkName);
+
+                        updateStockDisplay();  // 재고 현황 화면 갱신 (아래 구현)
+                    } else {
+                        alert('투입금액이 부족합니다.');
+                    }
+                });
+            });
+
+
+        // 메뉴 소진 시 솔드아웃 이미지 출력
+        function updateStockDisplay() {
+            for (let name of drinkNames) {
+                if (drinkStock[name] <= 0) {
+                    const imgEl = document.querySelector(`img[alt="${name}"]`);
+                    imgEl.src = `${soldoutImage[name]}.png`;
+                    imgEl.style.cursor = "not-allowed";
+
+                    // 클릭 이벤트 제거
+                    const newImgEl = imgEl.cloneNode(true);
+                    imgEl.parentNode.replaceChild(newImgEl, imgEl);
+                }
+            }
+        }
+
+        function outDrink(drinkName) {
+            return `${drinkImage[drinkName]}.png`;
+        }
+
+        function getPrice(drinkName) {
+            return drinkPrice[drinkName];
+        }
+
+
+        // 동전입력 처리
+        document.querySelector('#inputMoney').
+            addEventListener('click', function () {
+
+                // 동전 입력 처리
+                let coin = document.querySelector("#coin").value;
+
+                // 동전 누적
+                totInMoney += parseInt(coin);
+
+                // 동전 누적 출력
+                document.querySelector("#inMoney").value = totInMoney;
+
+            });
+
+        document.querySelector("#exchangCoins").addEventListener("click", () => {
+            let coins = document.querySelector("#inMoney").value;
+            document.querySelector("#inMoney").value = 0;
+
+            document.querySelector("#exchangeCoins").innerHTML = `${coins}`;
+            totInMoney = 0;
+        });
+    });
+
+
+    // 구매 목록
+
+
+    const purchasedCounts = {
+        "포카리": 0,
+        "코카콜라": 0,
+        "환타": 0
+    };
+
+    function addOutDrink(drinkName) {
+        purchasedCounts[drinkName]++;
+
+        // 구매목록 영역에서 해당 음료 선택
+        const drinkDiv = document.querySelector(`#baguni div[data-name="${drinkName}"]`);
+
+        if (drinkDiv.style.display === "none") {
+            drinkDiv.style.display = "inline-block";  // 이미지 보이기
+        }
+
+        // 갯수 누적
+        const countSpan = drinkDiv.querySelector(".count");
+        countSpan.textContent = purchasedCounts[drinkName];
+    }
+
+
+
+</script>
+
+</html>
